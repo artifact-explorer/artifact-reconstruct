@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .hidden {
+            display: none;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        a button {
+            text-decoration: none;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .loader {
+            text-align: center;
+            margin: 20px;
+            font-style: italic;
+            color: #777;
+        }
+        .error {
+            color: red;
+            margin: 10px 0;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="loginSection">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Breaking_Bad_logo.svg/2560px-Breaking_Bad_logo.svg.png" alt="Breaking Bad Logo" class="logo">
+            <h1>Login to Dashboard</h1>
+            <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+                <button type="button" onclick="login()">Login</button>
+            </form>
+        </div>
+        
+        <div id="mainDashboard" class="hidden">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Breaking_Bad_logo.svg/2560px-Breaking_Bad_logo.svg.png" alt="Breaking Bad Logo" class="logo">
+            <h1>Main Dashboard</h1>
+            <div class="dashboard-grid">
+                <div class="section">
+                    <h2>Public Databases</h2>
+                    <p>Access the Breaking Bad API for public data.</p>
+                    <a href="https://www.breakingbadapi.com/api/" target="_blank">
+                        <button>Go to Breaking Bad API</button>
+                    </a>
+                </div>
+                
+                <div class="section">
+                    <h2>My Website</h2>
+                    <p>Link to the website you've already made. Replace the placeholder URL below.</p>
+                    <a href="https://placeholder-your-website.com" target="_blank">
+                        <button>Go to My Website</button>
+                    </a>
+                    <!-- Placeholder: Update the href above with your actual website URL -->
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Tools Dashboard</h2>
+                <p>Welcome! Here you can access tools, upload to the database, and more.</p>
+                
+                <div>
+                    <h3>Tools</h3>
+                    <button onclick="alert('Tool 1 activated!')">Tool 1</button>
+                    <button onclick="alert('Tool 2 activated!')">Tool 2</button>
+                    <button onclick="alert('Tool 3 activated!')">Tool 3 (New)</button>
+                    <!-- Add more tools as needed -->
+                </div>
+                
+                <div>
+                    <h3>Upload to Database</h3>
+                    <form id="uploadForm">
+                        <label for="file">Choose file to upload:</label>
+                        <input type="file" id="file" required>
+                        <button type="button" onclick="upload()">Upload</button>
+                    </form>
+                </div>
+                
+                <div>
+                    <h3>Fetch Breaking Bad Characters</h3>
+                    <p>Click to load characters from the Breaking Bad API.</p>
+                    <button onclick="fetchCharacters()">Load Characters</button>
+                    <div id="charactersLoader" class="loader hidden">Loading...</div>
+                    <div id="charactersError" class="error hidden"></div>
+                    <table id="charactersTable" class="hidden">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Birthday</th>
+                                <th>Occupation</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="charactersBody"></tbody>
+                    </table>
+                </div>
+                
+                <div>
+                    <h3>Search Database</h3>
+                    <p>Enter a search term to query the database (simulated).</p>
+                    <input type="text" id="searchTerm" placeholder="Search...">
+                    <button onclick="searchDatabase()">Search</button>
+                    <div id="searchResults" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+            
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username && password) {
+                // Fake login check (in real app, this would be server-side)
+                alert('Logged in successfully!');
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('mainDashboard').classList.remove('hidden');
+            } else {
+                alert('Please enter username and password.');
+            }
+        }
+
+        function logout() {
+            alert('Logged out!');
+            document.getElementById('mainDashboard').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        function upload() {
+            const file = document.getElementById('file').files[0];
+            if (file) {
+                // Fake upload (in real app, this would send to server)
+                alert('File uploaded successfully: ' + file.name);
+            } else {
+                alert('Please select a file.');
+            }
+        }
+
+        async function fetchCharacters() {
+            const loader = document.getElementById('charactersLoader');
+            const errorDiv = document.getElementById('charactersError');
+            const table = document.getElementById('charactersTable');
+            const tbody = document.getElementById('charactersBody');
+
+            loader.classList.remove('hidden');
+            errorDiv.classList.add('hidden');
+            table.classList.add('hidden');
+            tbody.innerHTML = '';
+
+            try {
+                const response = await fetch('https://www.breakingbadapi.com/api/characters');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+
+                data.forEach(character => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${character.name}</td>
+                        <td>${character.birthday}</td>
+                        <td>${character.occupation.join(', ')}</td>
+                        <td>${character.status}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                table.classList.remove('hidden');
+            } catch (error) {
+                errorDiv.textContent = 'Error fetching characters: ' + error.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        function searchDatabase() {
+            const searchTerm = document.getElementById('searchTerm').value;
+            const resultsDiv = document.getElementById('searchResults');
+
+            if (searchTerm) {
+                // Fake search results (in real app, this would query a database)
+                resultsDiv.innerHTML = `
+                    <p>Search results for "${searchTerm}":</p>
+                    <ul>
+                        <li>Result 1 related to ${searchTerm}</li>
+                        <li>Result 2 related to ${searchTerm}</li>
+                        <li>Result 3 related to ${searchTerm}</li>
+                    </ul>
+                `;
+            } else {
+                resultsDiv.innerHTML = '<p class="error">Please enter a search term.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
